@@ -1003,19 +1003,37 @@ void S57Reader::ApplyObjectClassAttributes( DDFRecord * poRecord,
             continue;
         }
 
-        //If needed, recode the string in UTF-8.
-        const char *pszValue = poRecord->GetStringSubfield("NATF",0,"ATVL",iAttr);
-        if( pszValue != nullptr )
-        {
-            if(nOptionFlags & S57M_RECODE_BY_DSSI)
-            {
-                char* pszValueRecoded = RecodeByDSSI(pszValue,true);
-                poFeature->SetField(pszAcronym,pszValueRecoded);
-                CPLFree(pszValueRecoded);
-            }
-            else
-                poFeature->SetField(pszAcronym,pszValue);
-        }
+
+		    //If needed, recode the string in UTF-8.
+		    const char *pachBuffer = poRecord->GetStringSubfield("NATF",0,"ATVL",iAttr);
+		    if( pachBuffer != NULL )
+		    {
+		    	if( EQUAL(pszAcronym, "NINFOM") | EQUAL(pszAcronym, "NOBJNM")) 
+		    	{  
+		    		size_t nLength = strlen(pachBuffer);  
+
+		    		char* pszValue = new char[nLength];  
+		    		memcpy(pszValue, pachBuffer, nLength);  
+		    		pszValue[nLength-1] = '\0';  
+
+		    		const char* ptrS57FileTargetEncoding = CPLGetConfigOption("S57_TARGET_ENCODING", CPL_ENC_UTF8);  
+		    		const char* ptrS57FileSourceEncoding = CPLGetConfigOption("S57_SOURCE_ENCODING", CPL_ENC_UTF8);  
+		    		//printf("%s", pszValue);
+            char* pszLocalString = CPLRecode(pszValue, ptrS57FileSourceEncoding, ptrS57TargetEncoding); 
+		    		printf("%s", pszLocalString);
+		    		//char *pszGetUTF8 = CPLRecodeFromWChar( (const wchar_t*)pszValue, CPL_ENC_UCS2, CPL_ENC_UTF8);  
+		    		//printf("%s", pszGetUTF8);
+		    		//pachBuffer = CPLRecode( pszGetUTF8, CPL_ENC_UTF8, CPL_ENC_LOCALE);  
+		    		//pachBuffer = CPLRecode( pszLocalString, CPL_ENC_UTF8, CPL_ENC_LOCALE);  
+		    		pachBuffer = pszLocalString;
+		    		delete []pszValue;  
+		    	}  
+		    	// Add By liml 2013-04-25  
+
+		    	//poFeature->SetField( pszAcronym, pachBuffer);  
+		    	poFeature->SetField( pszAcronym, pachBuffer);  
+		    }
+
     }
 }
 
