@@ -1,0 +1,10 @@
+## Add customized encoding support in S57 reader.
+
+S57_TARGET_ENCODING (utf8 as default)
+S57_SOURCE_ENCODING (utf8 as default)
+
+e.g. 
+
+```bash
+UPDATE=APPLY S57_SOURCE_ENCODING=UTF16 ogrinfo C100000.000 BCNSPP
+```

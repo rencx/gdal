@@ -1019,7 +1019,7 @@ void S57Reader::ApplyObjectClassAttributes( DDFRecord * poRecord,
 		    		const char* ptrS57FileTargetEncoding = CPLGetConfigOption("S57_TARGET_ENCODING", CPL_ENC_UTF8);  
 		    		const char* ptrS57FileSourceEncoding = CPLGetConfigOption("S57_SOURCE_ENCODING", CPL_ENC_UTF8);  
 		    		//printf("%s", pszValue);
-            char* pszLocalString = CPLRecode(pszValue, ptrS57FileSourceEncoding, ptrS57TargetEncoding); 
+            char* pszLocalString = CPLRecode(pszValue, ptrS57FileSourceEncoding, ptrS57FileTargetEncoding);
 		    		printf("%s", pszLocalString);
 		    		//char *pszGetUTF8 = CPLRecodeFromWChar( (const wchar_t*)pszValue, CPL_ENC_UCS2, CPL_ENC_UTF8);  
 		    		//printf("%s", pszGetUTF8);
